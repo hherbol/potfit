@@ -114,10 +114,13 @@ SYSTEM = x86_64-gcc
 
 # Base directory of your installation of the MKL or ACML
 
-MKLDIR      = /opt/intel/composer_xe_2015.1.133/mkl
-ACML4DIR    = /opt/acml4.4.0/gfortran64
-ACML5DIR    = /opt/acml/gfortran64
-LIBMDIR     = /opt/acml/libm
+ACML4DIR    = /fs/home/hch54/Programs/ACML/acml4.4.0/gfortran64
+ACML5DIR    = /fs/home/hch54/Programs/ACML/acml5.3.1/gfortran64
+LIBMDIR     = /fs/home/hch54/Programs/ACML/acml5.3.1/libm
+
+MKLDIR      = /fs/europa/g_pc/intel/mkl
+MKLROOT     = /fs/europa/g_pc/intel/mkl
+BIN_DIR     = /fs/home/hch54/Programs/potfit/bin/
 
 ###########################################################################
 #
@@ -178,6 +181,7 @@ ifeq (${MATH_LIB},__ACCELERATE__)
   LIBS += -framework Accelerate
 else ifeq (${MATH_LIB},MKL)
   CINCLUDE      += -I${MKLDIR}/include
+  LIBS          += -L${MKLDIR}/lib/intel64
   LIBS          += -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential \
                    -lmkl_core -Wl,--end-group -lpthread
 else ifeq (${MATH_LIB},ACML4)
@@ -213,6 +217,7 @@ ifeq (${MATH_LIB},__ACCELERATE__)
   LIBS += -framework Accelerate 
 else ifeq (${MATH_LIB},MKL)
   CINCLUDE      += -I${MKLDIR}/include
+  LIBS          += -L${MKLDIR}/lib/intel64
   LIBS          += -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core \
                    -Wl,--end-group -lpthread -Wl,--as-needed
 else ifeq (${MATH_LIB},ACML4)
@@ -247,6 +252,7 @@ ifeq (${MATH_LIB},__ACCELERATE__)
   LIBS += -framework Accelerate
 else ifeq (${MATH_LIB},MKL)
   CINCLUDE      += -I${MKLDIR}/include
+  LIBS          += -L${MKLDIR}/lib/intel64
   LIBS          += -Wl,--start-group -lmkl_intel_lp64 -lmkl_sequential -lmkl_core \
                    -Wl,--end-group -lpthread -Wl,--as-needed
 else ifeq (${MATH_LIB},ACML4)
@@ -285,6 +291,7 @@ ifeq (${MATH_LIB},__ACCELERATE__)
   LIBS += -framework Accelerate
 else ifeq (${MATH_LIB},MKL)
   CINCLUDE      += -I${MKLDIR}/include
+  LIBS          += -L${MKLDIR}/lib/intel64
   LIBS          += -Wl,--start-group -lmkl_intel -lmkl_sequential -lmkl_core \
                    -Wl,--end-group -lpthread
 else ifeq (${MATH_LIB},ACML4)
@@ -318,6 +325,7 @@ ifeq (${MATH_LIB},__ACCELERATE__)
   LIBS += -framework Accelerate
 else ifeq (${MATH_LIB},MKL)
   CINCLUDE      += -I${MKLDIR}/include
+  LIBS          += -L${MKLDIR}/lib/intel64
   LIBS          += -Wl,--start-group -lmkl_intel -lmkl_sequential -lmkl_core \
                    -Wl,--end-group -lpthread -Wl,--as-needed
 else ifeq (${MATH_LIB},ACML4)
