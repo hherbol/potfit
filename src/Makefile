@@ -236,6 +236,7 @@ SOURCES	:= ${POTFITSRC}
 ###  INTERACTIONS  #######################################
 
 INTERACTION = 0
+MIXING = 0
 
 # pair potentials
 ifneq (,$(findstring pair,${MAKETARGET}))
@@ -243,10 +244,18 @@ ifneq (,$(findstring pair,${MAKETARGET}))
   INTERACTION = 1
 endif
 
+# Mix potentials
+ifneq (,$(findstring mix,${MAKETARGET}))
+  CFLAGS += -DMIX
+  MIXING = 1
+endif
+
 # embedded atom method (EAM) potentials
 ifneq (,$(strip $(findstring eam,${MAKETARGET})))
   ifneq (,$(findstring 1,${INTERACTION}))
-    ERROR += "More than one potential model specified!\n"
+    ifeq (,$(findstring 1,${MIXING}))
+      ERROR += "More than one potential model specified!\n"
+    endif
   endif
   ifneq (,$(strip $(findstring meam,${MAKETARGET})))
     CFLAGS += -DMEAM
@@ -262,7 +271,9 @@ endif
 ifneq (,$(strip $(findstring coulomb,${MAKETARGET})))
   ifeq (,$(strip $(findstring eam,${MAKETARGET})))
     ifneq (,$(findstring 1,${INTERACTION}))
-      ERROR += "More than one potential model specified!\n"
+      ifeq (,$(findstring 1,${MIXING}))
+        ERROR += "More than one potential model specified!\n"
+      endif
     endif
   endif
   ifeq (,$(strip $(findstring apot,${MAKETARGET})))
@@ -279,7 +290,9 @@ endif
 ifneq (,$(strip $(findstring dipole,${MAKETARGET})))
   ifeq (,$(strip $(findstring eam,${MAKETARGET})))
     ifneq (,$(findstring 1,${INTERACTION}))
-      ERROR += "More than one potential model specified!\n"
+      ifeq (,$(findstring 1,${MIXING}))
+        ERROR += "More than one potential model specified!\n"
+      endif
     endif
   endif
   ifneq (,$(strip $(findstring dsf,${MAKETARGET})))
@@ -295,7 +308,9 @@ endif
 # angular dependent potentials (ADP)
 ifneq (,$(strip $(findstring adp,${MAKETARGET})))
   ifneq (,$(findstring 1,${INTERACTION}))
-    ERROR += "More than one potential model specified!\n"
+    ifeq (,$(findstring 1,${MIXING}))
+      ERROR += "More than one potential model specified!\n"
+    endif
   endif
   CFLAGS += -DADP
   INTERACTION = 1
@@ -304,7 +319,9 @@ endif
 # Stillinger-Weber potentials (STIWEB)
 ifneq (,$(strip $(findstring stiweb,${MAKETARGET})))
   ifneq (,$(findstring 1,${INTERACTION}))
-    ERROR += "More than one potential model specified!\n"
+    ifeq (,$(findstring 1,${MIXING}))
+      ERROR += "More than one potential model specified!\n"
+    endif
   endif
   ifeq (,$(findstring apot,${MAKETARGET}))
     ERROR += "STIWEB does not work without the apot flag!\n"
@@ -316,7 +333,9 @@ endif
 # Tersoff potentials (TERSOFF and TERSOFFMOD)
 ifneq (,$(strip $(findstring tersoff,${MAKETARGET})))
   ifneq (,$(findstring 1,${INTERACTION}))
-    ERROR += "More than one potential model specified!\n"
+    ifeq (,$(findstring 1,${MIXING}))
+      ERROR += "More than one potential model specified!\n"
+    endif
   endif
   ifeq (,$(findstring apot,${MAKETARGET}))
     ERROR += "TERSOFF does not work without the apot flag!\n"
@@ -330,7 +349,9 @@ endif
 
 ifneq (,$(findstring kim,${MAKETARGET}))
   ifneq (,$(findstring 1,${INTERACTION}))
-    ERROR += "More than one potential model specified.\n"
+    ifeq (,$(findstring 1,${MIXING}))
+      ERROR += "More than one potential model specified!\n"
+    endif
   endif
   INTERACTION = 1
 endif
@@ -445,6 +466,15 @@ ifneq (,$(findstring kim,${MAKETARGET}))
   endif
   ifneq (,$(findstring resc,${MAKETARGET}))
     ERROR += "KIM potential does not support resc option!\n"
+  endif
+endif
+
+ifneq (,$(findstring 1,${MIXING}))
+  ifeq (,$(findstring pair,${MAKETARGET}))
+    ERROR += "MIX requires pair for long range interactions"
+  endif
+  ifeq (,$(findstring tersoff,${MAKETARGET}))
+    ERROR += "Currently MIX only works for pair and tersoff"
   endif
 endif
 
