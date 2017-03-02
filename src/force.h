@@ -54,4 +54,16 @@ void update_stiweb_pointers(double*);
 void update_tersoff_pointers(double*);
 #endif  // TERSOFF
 
+/****************************************************************
+* When we mix, we re-define function calls to pair and the mixed
+* potential.  This allows the force call to go to force_mix.c
+* instead, which takes care of mixing.
+****************************************************************/
+#if defined(MIX)
+#define FUNCTION_CALL double calc_mix_pair_force(double* xi_opt, double* forces, int flag);
+#define INIT_FORCES void init_mix_pair_force(int is_worker);
+#define FUNCTION_CALL double calc_mix_pot_force(double* xi_opt, double* forces, int flag);
+#define INIT_FORCES void init_mix_pot_force(int is_worker);
+#endif
+
 #endif  // FORCE_H_INCLUDED

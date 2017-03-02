@@ -31,6 +31,19 @@
 #error force_tersoff.c compiled without TERSOFF support
 #endif
 
+/****************************************************************
+* When we mix, we re-define function calls to pair and the mixed
+* potential.  This allows the force call to go to force_mix.c
+* instead, which takes care of mixing.
+****************************************************************/
+#if !defined(MIX)
+#define FUNCTION_CALL double calc_forces(double* xi_opt, double* forces, int flag)
+#define INIT_FORCES void init_force(int is_worker)
+#else
+#define FUNCTION_CALL double calc_mix_pot_force(double* xi_opt, double* forces, int flag)
+#define INIT_FORCES void init_mix_pot_force(int is_worker)
+#endif
+
 #include "potfit.h"
 
 #include "force.h"
@@ -49,7 +62,11 @@
  *
  ****************************************************************/
 
-void init_force(int is_worker) {}
+// void init_force(int is_worker)
+INIT_FORCES
+{
+
+}
 
 /****************************************************************
  *
@@ -103,7 +120,8 @@ void init_force(int is_worker) {}
 
 #if !defined(TERSOFFMOD)
 
-double calc_forces(double* xi_opt, double* forces, int flag)
+//double calc_forces(double* xi_opt, double* forces, int flag)
+FUNCTION_CALL
 {
   tersoff_t const* ters = &g_pot.apot_table.tersoff;
 
@@ -433,7 +451,8 @@ double calc_forces(double* xi_opt, double* forces, int flag)
   calc_forces
 ****************************************************************/
 
-double calc_forces(double* xi_opt, double* forces, int flag)
+//double calc_forces(double* xi_opt, double* forces, int flag)
+FUNCTION_CALL
 {
   const tersoff_t* ters = &g_pot.apot_table.tersoff;
 

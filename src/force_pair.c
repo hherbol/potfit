@@ -31,6 +31,19 @@
 #error force_pair.c compiled without PAIR support
 #endif
 
+/****************************************************************
+* When we mix, we re-define function calls to pair and the mixed
+* potential.  This allows the force call to go to force_mix.c
+* instead, which takes care of mixing.
+****************************************************************/
+#if !defined(MIX)
+#define FUNCTION_CALL double calc_forces(double* xi_opt, double* forces, int flag)
+#define INIT_FORCES void init_force(int is_worker)
+#else
+#define FUNCTION_CALL double calc_mix_pair_force(double* xi_opt, double* forces, int flag)
+#define INIT_FORCES void init_mix_pair_force(int is_worker)
+#endif
+
 #include "potfit.h"
 
 #include "chempot.h"
@@ -49,7 +62,8 @@
     additional assignments and initializations can be performed here
 ****************************************************************/
 
-void init_force(int is_worker)
+// void init_force(int is_worker)
+INIT_FORCES
 {
   // nothing to do here for pair potentials
 }
@@ -103,7 +117,8 @@ void init_force(int is_worker)
  *
  ****************************************************************/
 
-double calc_forces(double* xi_opt, double* forces, int flag)
+// double calc_forces(double* xi_opt, double* forces, int flag)
+FUNCTION_CALL
 {
   double* xi = NULL;
 
