@@ -121,12 +121,11 @@ void init_force(int is_worker)
 double calc_forces(double* xi_opt, double* forces, int flag)
 {
   double* xi = NULL;
+  double* total_forces = NULL;
   // First, let's generate our "total forces" variable.  We'll then
   // later loop through the "sub" forces and add them here
   if (g_calc.mdim > 0){
     double* total_forces = (double*)Malloc(g_calc.mdim * sizeof(double));
-  } else {
-    double* total_forces = NULL;
   }
 
   /* mdim is the dimension of the force vector:
