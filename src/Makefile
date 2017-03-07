@@ -153,6 +153,11 @@ ifneq (,$(strip $(findstring pair,${MAKETARGET})))
   POTFITSRC	+= force_pair.c
 endif
 
+ifneq (,$(strip $(findstring mix,${MAKETARGET})))
+  POTFITSRC	+= force_mix.c
+  POTFITSRC	+= force_smooth.c
+endif
+
 ifneq (,$(strip $(findstring eam,${MAKETARGET})))
   ifneq (,$(strip $(findstring meam,${MAKETARGET})))
     POTFITSRC	+= force_meam.c
@@ -471,10 +476,13 @@ endif
 
 ifneq (,$(findstring 1,${MIXING}))
   ifeq (,$(findstring pair,${MAKETARGET}))
-    ERROR += "MIX requires pair for long range interactions"
+    ERROR += "MIX requires pair for long range interactions.\n"
   endif
   ifeq (,$(findstring tersoff,${MAKETARGET}))
-    ERROR += "Currently MIX only works for pair and tersoff"
+    ERROR += "Currently MIX only works for pair and tersoff.\n"
+  endif
+  ifneq (,$(findstring stress,${MAKETARGET}))
+    ERROR += "Currently MIX does not support stress.\n"
   endif
 endif
 

@@ -37,11 +37,11 @@
 * instead, which takes care of mixing.
 ****************************************************************/
 #if !defined(MIX)
-#define FUNCTION_CALL double calc_forces(double* xi_opt, double* forces, int flag)
-#define INIT_FORCES void init_force(int is_worker)
+#define FUNCTION_CALL_POT double calc_forces(double* xi_opt, double* forces, int flag)
+#define INIT_FORCES_POT void init_force(int is_worker)
 #else
-#define FUNCTION_CALL double calc_mix_pot_force(double* xi_opt, double* forces, int flag)
-#define INIT_FORCES void init_mix_pot_force(int is_worker)
+#define FUNCTION_CALL_POT double calc_mix_pot_force(double* xi_opt, double* forces, int flag, double r_cut_r_l)
+#define INIT_FORCES_POT void init_mix_pot_force(int is_worker)
 #endif
 
 #include "potfit.h"
@@ -63,7 +63,7 @@
  ****************************************************************/
 
 // void init_force(int is_worker)
-INIT_FORCES
+INIT_FORCES_POT
 {
 
 }
@@ -121,7 +121,7 @@ INIT_FORCES
 #if !defined(TERSOFFMOD)
 
 //double calc_forces(double* xi_opt, double* forces, int flag)
-FUNCTION_CALL
+FUNCTION_CALL_POT
 {
   tersoff_t const* ters = &g_pot.apot_table.tersoff;
 
@@ -452,7 +452,7 @@ FUNCTION_CALL
 ****************************************************************/
 
 //double calc_forces(double* xi_opt, double* forces, int flag)
-FUNCTION_CALL
+FUNCTION_CALL_POT
 {
   const tersoff_t* ters = &g_pot.apot_table.tersoff;
 

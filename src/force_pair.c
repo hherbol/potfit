@@ -37,11 +37,11 @@
 * instead, which takes care of mixing.
 ****************************************************************/
 #if !defined(MIX)
-#define FUNCTION_CALL double calc_forces(double* xi_opt, double* forces, int flag)
-#define INIT_FORCES void init_force(int is_worker)
+#define FUNCTION_CALL_PAIR double calc_forces(double* xi_opt, double* forces, int flag)
+#define INIT_FORCES_PAIR void init_force(int is_worker)
 #else
-#define FUNCTION_CALL double calc_mix_pair_force(double* xi_opt, double* forces, int flag)
-#define INIT_FORCES void init_mix_pair_force(int is_worker)
+#define FUNCTION_CALL_PAIR double calc_mix_pair_force(double* xi_opt, double* forces, int flag, double r_cut_r_l, double r_cut_l)
+#define INIT_FORCES_PAIR void init_mix_pair_force(int is_worker)
 #endif
 
 #include "potfit.h"
@@ -63,7 +63,7 @@
 ****************************************************************/
 
 // void init_force(int is_worker)
-INIT_FORCES
+INIT_FORCES_PAIR
 {
   // nothing to do here for pair potentials
 }
@@ -78,6 +78,11 @@ INIT_FORCES
  *  arguments: *xi - pointer to potential
  *             *forces - pointer to forces calculated from potential
  *             flag - used for special tasks
+ *  If MIX:
+ *             r_cut_r_l - Double for the cutoff between reactive and
+ *                         long-range (SMRFF).  NOTE! This is actually
+ *                         r_cut_r_l + d_cut, for some smoothing "width".
+ *             r_cut_l - Long range cutoff (SMRFF)
  *
  * When using the mpi-parallelized version of potfit, all processes but the
  * root process jump into this function immediately after initialization and
@@ -118,7 +123,7 @@ INIT_FORCES
  ****************************************************************/
 
 // double calc_forces(double* xi_opt, double* forces, int flag)
-FUNCTION_CALL
+FUNCTION_CALL_PAIR
 {
   double* xi = NULL;
 

@@ -60,10 +60,10 @@ void update_tersoff_pointers(double*);
 * instead, which takes care of mixing.
 ****************************************************************/
 #if defined(MIX)
-#define FUNCTION_CALL double calc_mix_pair_force(double* xi_opt, double* forces, int flag);
-#define INIT_FORCES void init_mix_pair_force(int is_worker);
-#define FUNCTION_CALL double calc_mix_pot_force(double* xi_opt, double* forces, int flag);
-#define INIT_FORCES void init_mix_pot_force(int is_worker);
+double calc_mix_pair_force(double* xi_opt, double* forces, int flag, double r_cut_r_l, double r_cut_l);
+void init_mix_pair_force(int is_worker);
+double calc_mix_pot_force(double* xi_opt, double* forces, int flag, double r_cut_r_l);
+void init_mix_pot_force(int is_worker);
 #endif
 
 #endif  // FORCE_H_INCLUDED
